@@ -48,7 +48,7 @@ pipeline{
             steps{
                 script{
                     echo "building the application..."
-                    sh 'mvn package'
+                    sh 'mvn package package -f ./module-8/java-maven-app/pom.xml'
                 }
             }
         }
