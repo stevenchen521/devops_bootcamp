@@ -3,13 +3,13 @@ def gv
 pipeline {
     agent any
     stages {
-//         stage("init") {
-//             steps {
-//                 script {
-//                     gv = load "script.groovy"
-//                 }
-//             }
-//         }
+        stage("init") {
+            steps {
+                script {
+                    gv = load "./module-8/java-maven-app/script.groovy"
+                }
+            }
+        }
         stage("build jar") {
             steps {
                 script {
