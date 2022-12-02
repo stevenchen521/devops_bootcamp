@@ -52,7 +52,7 @@ pipeline{
                 }
             }
         }
-        stage("build jar"){
+        stage("build image"){
             steps{
                 script{
                     echo "building the docker image..."
