@@ -1,38 +1,79 @@
-def gv
+// def gv
+//
+// pipeline {
+//     agent any
+//     stages {
+//         stage("init") {
+//             steps {
+//                 script {
+//                     gv = load "./module-8/java-maven-app/script.groovy"
+//                 }
+//             }
+//         }
+//         stage("build jar") {
+//             steps {
+//                 script {
+// //                     echo "building jar"
+//                     gv.buildJar()
+//                 }
+//             }
+//         }
+//         stage("build image") {
+//             steps {
+//                 script {
+// //                     echo "building image"
+//                     gv.buildImage()
+//                 }
+//             }
+//         }
+//         stage("deploy") {
+//             steps {
+//                 script {
+// //                     echo "deploying"
+//                     gv.deployApp()
+//                 }
+//             }
+//         }
+//     }
+// }
 
-pipeline {
+
+pipeline{
     agent any
+    tools{
+        maven "maven-3.8"
+    }
     stages {
-        stage("init") {
-            steps {
-                script {
-                    gv = load "./module-8/java-maven-app/script.groovy"
+        stage("build jar"){
+            steps{
+                script{
+                    echo "building the application..."
+                    sh 'mvn package'
                 }
             }
         }
-        stage("build jar") {
-            steps {
-                script {
-//                     echo "building jar"
-                    gv.buildJar()
+        stage("build jar"){
+            steps{
+                script{
+                    echo "building the docker image..."
+                    withCredentials([usernamePassword(credentialId: 'docker-hub-repo', passwordVariable:'PASS', usernameVariable:'USER')]){
+                        sh 'docker build -t stevenchen521/demo-app:jma-2.0 .'
+                        sh "echo $PASS | docker login -u $USER --password-stdin"
+                        sh 'docker push stevenchen521/demo-app:jma-2.0'
+                    }
                 }
             }
         }
-        stage("build image") {
-            steps {
-                script {
-//                     echo "building image"
-                    gv.buildImage()
+
+        stage("deploy"){
+            steps{
+                script{
+                    echo "deploying the application..."
                 }
             }
         }
-        stage("deploy") {
-            steps {
-                script {
-//                     echo "deploying"
-                    gv.deployApp()
-                }
-            }
-        }
-    }   
+
+
+    }
+
 }
